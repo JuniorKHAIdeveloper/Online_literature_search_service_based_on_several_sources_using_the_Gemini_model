@@ -1,0 +1,586 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <link rel="icon" href="%PUBLIC_URL%/favicon.ico" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Merriweather&display=swap"
+      rel="stylesheet"
+    />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#000000" />
+    <meta
+      name="description"
+      content="Web site created using create-react-app"
+    />
+    <link rel="apple-touch-icon" href="%PUBLIC_URL%/logo192.png" />
+    <!--
+      manifest.json provides metadata used when your web app is installed on a
+      user's mobile device or desktop. See https://developers.google.com/web/fundamentals/web-app-manifest/
+    -->
+    <link rel="manifest" href="%PUBLIC_URL%/manifest.json" />
+    <!--
+      Notice the use of %PUBLIC_URL% in the tags above.
+      It will be replaced with the URL of the `public` folder during the build.
+      Only files inside the `public` folder can be referenced from the HTML.
+
+      Unlike "/favicon.ico" or "favicon.ico", "%PUBLIC_URL%/favicon.ico" will
+      work correctly both with client-side routing and a non-root public URL.
+      Learn how to configure a non-root public URL by running `npm run build`.
+    -->
+    <title>КнигоLove</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r125/three.min.js"></script>
+    <script src="https://unpkg.co/gsap@3/dist/gsap.min.js"></script>
+    <style>
+      #webgl {
+        width: 800px;
+        height: 600px;
+        position: absolute;
+        z-index: -1;
+      }
+
+      #webgl2 {
+        position: absolute;
+        top: 0;
+        left: 0;
+        outline: none;
+        z-index: 2;
+      }
+
+      #bg-box {
+        width: 802px;
+        height: 602px;
+        position: absolute;
+        z-index: -1;
+      }
+
+      .svg-box {
+        width: 800px;
+        height: 600px;
+        position: absolute;
+        z-index: 1;
+      }
+
+      #robot {
+        cursor: pointer;
+      }
+
+      #robot-animation {
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: 800px;
+        height: 600px;
+        z-index: 1302;
+      }
+
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+        }
+        to {
+          opacity: 1;
+        }
+      }
+
+      .fade-in {
+        animation: fadeIn 0.5s ease forwards; /* Adjust duration and timing function as needed */
+      }
+    </style>
+  </head>
+  <body>
+    <noscript>You need to enable JavaScript to run this app.</noscript>
+    <div id="root"></div>
+    <!--
+      This HTML file is a template.
+      If you open it directly in the browser, you will see an empty page.
+
+      You can add webfonts, meta tags, or analytics to this file.
+      The build step will place the bundled scripts into the <body> tag.
+
+      To begin the development, run `npm start` or `yarn start`.
+      To create a production bundle, use `npm run build` or `yarn build`.
+    -->
+    <script>
+      function runAnimation() {
+        /* SVG ANIMATION */
+
+        function animation() {
+          let isLeft = false;
+
+          /**
+           * Robot
+           */
+
+          gsap.set("#left-hand", {
+            x: 30,
+            transformOrigin: "right center",
+          });
+          gsap.set("#right-hand", {
+            x: -30,
+            transformOrigin: "left center",
+          });
+
+          const eyesTl = gsap
+            .timeline({
+              repeat: -1,
+              repeatDelay: 1,
+            })
+            .to(".eyes", {
+              opacity: 0,
+              duration: 0.1,
+            })
+            .to(".eyes", {
+              opacity: 1,
+              duration: 0.1,
+            });
+
+          const robotTl = gsap
+            .timeline({
+              repeat: -1,
+            })
+            .to(
+              "#robot",
+              {
+                x: 100,
+                onStart: () => {
+                  isLeft = false;
+                },
+              },
+              "right"
+            )
+            .to(
+              "#faces",
+              {
+                x: -60,
+              },
+              "right"
+            )
+            .to(
+              "#left-hand",
+              {
+                x: 80,
+              },
+              "right"
+            )
+            .to(
+              "#charge",
+              {
+                scaleX: 0.8,
+              },
+              "right"
+            )
+            .to("#right-hand", {
+              rotation: 20,
+              repeat: 2,
+              yoyo: true,
+              ease: "power2.inOut",
+              duration: 0.4,
+            })
+            .to(
+              "#robot",
+              {
+                x: -100,
+                onStart: () => {
+                  isLeft = true;
+                },
+              },
+              "left"
+            )
+            .to(
+              "#faces",
+              {
+                x: 60,
+              },
+              "left"
+            )
+            .to(
+              "#charge",
+              {
+                scaleX: 0.8,
+              },
+              "left"
+            )
+            .to(
+              "#left-hand",
+              {
+                x: 30,
+              },
+              "left"
+            )
+            .to(
+              "#right-hand",
+              {
+                x: -80,
+              },
+              "left"
+            )
+            .to("#left-hand", {
+              rotation: -20,
+              repeat: 3,
+              yoyo: true,
+              ease: "power1.inOut",
+              duration: 0.4,
+            })
+            .to(
+              "#robot",
+              {
+                x: 0,
+              },
+              "center"
+            )
+            .to(
+              "#faces",
+              {
+                x: 0,
+              },
+              "center"
+            )
+            .to(
+              "#charge",
+              {
+                scaleX: 1,
+              },
+              "center"
+            )
+            .to("#left-hand", {
+              y: -50,
+              x: -10,
+              rotation: 30,
+            })
+            .to("#left-hand", {
+              rotation: 50,
+              repeat: 1,
+              yoyo: true,
+              ease: "sine.inOut",
+            })
+            .to("#left-hand", {
+              y: 0,
+              x: 30,
+              rotation: 0,
+            });
+          robotTl.timeScale(0.8);
+
+          /**
+           * Main display
+           */
+
+          //left-top-circle
+          gsap.set("#left-top-circle", {
+            transformOrigin: "center",
+            scale: 0,
+          });
+
+          gsap.to("#left-top-circle", {
+            transformOrigin: "center",
+            scale: 1,
+            fill: "#34496a",
+            repeat: -1,
+            duration: 2,
+          });
+
+          //graph-left-btm
+          gsap.to(".graph-circle-lb", {
+            rotation: 360,
+            transformOrigin: "center",
+            duration: 2,
+            stagger: {
+              amount: 1,
+              ease: "sine.inOut",
+              repeat: -1,
+            },
+          });
+
+          //planet
+          const planetTl = gsap
+            .timeline({
+              repeat: -1,
+              yoyo: true,
+            })
+            .set("#planet-circle", {
+              rotation: 10,
+              transformOrigin: "center",
+            })
+            .to("#planet-circle", {
+              rotation: -10,
+              transformOrigin: "center",
+              ease: "power1.inOut",
+            });
+
+          //circle-btm-graph
+          gsap.to("#graph-cir-1", {
+            rotation: 360,
+            ease: "none",
+            transformOrigin: "-9px center",
+            duration: 3,
+            repeat: -1,
+          });
+
+          gsap.to("#graph-cir-2", {
+            rotation: 360,
+            ease: "none",
+            transformOrigin: "center 18px",
+            duration: 4,
+            repeat: -1,
+          });
+
+          gsap.to("#graph-cir-3", {
+            rotation: 360,
+            ease: "none",
+            transformOrigin: "-19px center",
+            duration: 5,
+            repeat: -1,
+          });
+
+          gsap.to("#graph-cir-mid-2", {
+            scale: 1.5,
+            ease: "sine.inOut",
+            transformOrigin: "center",
+            repeat: -1,
+            yoyo: true,
+          });
+
+          //bottom-right-graph
+          gsap.to("#graph-left", {
+            morphSVG: "#graph-morph1",
+            repeat: -1,
+            yoyo: true,
+            ease: Elastic.easeOut.config(1, 0.8),
+            duration: 2,
+          });
+
+          gsap.to("#graph-right", {
+            morphSVG: "#graph-morph2",
+            repeat: -1,
+            yoyo: true,
+            ease: "power3.inOut",
+            duration: 1,
+          });
+          //top right circle
+
+          gsap.to(".circles-top", {
+            rotation: 360,
+
+            duration: 10,
+            transformOrigin: "center",
+            stagger: {
+              each: 0.5,
+              ease: "none",
+              repeat: -1,
+            },
+          });
+
+          gsap.to("#circle-l", {
+            drawSVG: "20",
+            repeat: -1,
+            yoyo: true,
+            ease: Bounce.easeOut,
+            duration: 1,
+          });
+
+          gsap.to("#circle-m", {
+            drawSVG: "80 30",
+            repeat: -1,
+            yoyo: true,
+            ease: Bounce.easeOut,
+            duration: 1.5,
+          });
+
+          gsap.to("#circle-r", {
+            drawSVG: "0",
+            repeat: -1,
+            yoyo: true,
+            ease: SteppedEase.config(12),
+            duration: 3,
+          });
+
+          /**
+           * Left Display
+           */
+          gsap.to("#left-display-display", {
+            y: 10,
+            ease: "sine.inOut",
+            repeat: -1,
+            yoyo: true,
+            duration: 2,
+          });
+          gsap.to("#left-display-shadow", {
+            scale: 1.1,
+            transformOrigin: "center",
+            ease: "sine.inOut",
+            repeat: -1,
+            yoyo: true,
+            duration: 2,
+          });
+
+          //song
+          const songTl = gsap
+            .timeline({
+              repeat: -1,
+            })
+            .to("#left-display-display line", {
+              stroke: "#34496a",
+              stagger: {
+                each: 0.5,
+              },
+            })
+            .to("#left-display-display line", {
+              stroke: "#0ff",
+              stagger: {
+                each: 0.5,
+              },
+            });
+
+          gsap.to(".notes", {
+            y: gsap.utils.random(-50, -100, 10, true),
+            x: gsap.utils.random(-50, 50, 25, true),
+            opacity: 1,
+            duration: gsap.utils.random(1.5, 3, 1.5, true),
+            stagger: {
+              each: 0.5,
+              ease: "sine.in",
+              repeat: -1,
+            },
+          });
+
+          /**
+           * Right Display
+           */
+          gsap.to("#right-display-display", {
+            y: 10,
+            ease: "sine.inOut",
+            repeat: -1,
+            yoyo: true,
+            duration: 2,
+            delay: 1.5,
+          });
+          gsap.to("#right-display-shadow", {
+            scale: 1.1,
+            transformOrigin: "center",
+            ease: "sine.inOut",
+            repeat: -1,
+            yoyo: true,
+            duration: 2,
+            delay: 1.5,
+          });
+
+          //graph-lines
+          gsap.to("#graph-line", {
+            x: -105,
+            ease: "none",
+            repeat: -1,
+            duration: 2,
+          });
+
+          gsap.to("#bar-1-top", {
+            morphSVG: "#bar-1-btm",
+            repeat: -1,
+            yoyo: true,
+          });
+          gsap.to("#bar-2-top", {
+            morphSVG: "#bar-2-btm",
+            repeat: -1,
+            yoyo: true,
+            duration: 1.5,
+          });
+          gsap.to("#bar-3-top", {
+            morphSVG: "#bar-3-btm",
+            repeat: -1,
+            yoyo: true,
+            duration: 2,
+          });
+
+          //btns
+          gsap.to("#btns ellipse", {
+            fill: "#34496a",
+            stagger: {
+              amount: 1,
+              grid: [4, 4],
+              repeat: -1,
+              yoyo: true,
+              from: "random",
+            },
+          });
+
+          const sizes = {
+            width: window.innerWidth,
+            height: window.innerHeight,
+          };
+
+          /**
+           * Mouse
+           */
+
+          let mouseX = 0;
+          let mouseY = 0;
+
+          window.addEventListener("mousemove", (e) => {
+            mouseX = (e.clientX / sizes.width) * 2 - 1;
+            mouseY = -(e.clientY / sizes.height) * 2 + 1;
+
+            gsap.to("#mid-display", {
+              x: -mouseX * 10,
+              y: mouseY * 10,
+            });
+
+            gsap.to("#btm-display", {
+              x: -mouseX * 20,
+              y: mouseY * 10,
+            });
+          });
+
+          document.getElementById("robot").addEventListener("click", () => {
+            robotTl.pause();
+
+            const helloTl = gsap
+              .timeline({
+                paused: true,
+              })
+              .to("#faces", {
+                x: isLeft ? 150 : -150,
+                ease: "sine.inOut",
+                repeatDelay: 1,
+                repeat: 1,
+                yoyo: true,
+
+                onComplete: () => {
+                  robotTl.resume();
+                },
+              });
+
+            helloTl.restart();
+          });
+        }
+        animation();
+      }
+      // Define the target node (container div)
+      const targetNode = document.body;
+
+      // Options for the observer (we're interested in child additions)
+      const config = { childList: true, subtree: true };
+
+      // Callback function to execute when mutations are observed
+      const callback = function (mutationsList, observer) {
+        for (const mutation of mutationsList) {
+          if (mutation.type === "childList") {
+            for (const node of mutation.addedNodes) {
+              if (node.id === "robot-animation") {
+                // If the specific ID appears, trigger the function
+                runAnimation();
+              }
+            }
+          }
+        }
+      };
+
+      // Create an observer instance linked to the callback function
+      const observer = new MutationObserver(callback);
+
+      // Start observing the target node for configured mutations
+      observer.observe(targetNode, config);
+    </script>
+  </body>
+</html>
